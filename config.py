@@ -26,11 +26,12 @@ KASPAR_DRIVER_NOTES = {
     "System P3 (Kaspar DSP)": "All drivers, gain profile 3: Woofer -4.8, LM -6.2, UM -2.8, HI 0 dB.",
 }
 
-# Juan's BATMAN, measured outdoors on a turntable on 12-Oct-2026. Every capture
+# Juan's BATMAN, measured on a turntable on 12-Oct-2026. Every capture
 # shares one setup; the per-driver notes say how rotation maps to plot angles.
 BATMAN_COMMON_NOTE = (
-    "Juan's BATMAN with MU10 and nested tweeters, front tweeter in inverted polarity. "
-    "Outdoors, 12-Oct-2026. Mic 50 cm in front at 108 cm height, no timing reference."
+    "Juan's BATMAN with MU10 and the nested tweeters on the outer side (ANIDADOS EN EL "
+    "EXTERIOR), front tweeter in inverted polarity. 12-Oct-2026. Mic 50 cm in front at "
+    "108 cm height, no timing reference."
 )
 
 BATMAN_DRIVER_NOTES = {
@@ -182,7 +183,7 @@ MEASUREMENT_SETS = {
         },
     },
     "juan-batman": {
-        # Juan's BATMAN (MU10 + nested tweeters), outdoors: one turntable sweep
+        # Juan's BATMAN (MU10 + nested tweeters on the outer side): one turntable sweep
         # 0-350 deg in 10 deg steps, files named by absolute rotation, plus a
         # 0-180 deg sweep with Harman-curve EQ in the nested subfolder. The
         # 180-360 deg half loads as the driver's left side (see

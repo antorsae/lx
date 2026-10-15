@@ -887,7 +887,7 @@ class PolarResponseVisualizer:
         extra_set_specs = [
             ("juan-baffleless", "Juan baffleless drivers", "loadExtraJuanBafflelessBtn"),
             ("juan-lx521-top-raw", "Juan top-baffle raw drivers", "loadExtraJuanTopBaffleBtn"),
-            ("juan-batman", "Juan BATMAN outdoor 360", "loadExtraJuanBatmanBtn"),
+            ("juan-batman", "Juan BATMAN 360 turntable", "loadExtraJuanBatmanBtn"),
             ("kaspar", "Kaspar LX521 outdoor 1 m (DSP)", "loadExtraKasparBtn"),
         ]
         # Speaker rotations do not line up with the other sets' off-axis angles
@@ -5489,7 +5489,7 @@ class PolarResponseVisualizer:
         extra_set_specs = [
             ("juan-baffleless", "Juan baffleless drivers", "loadExtraPolarJuanBafflelessBtn"),
             ("juan-lx521-top-raw", "Juan top-baffle raw drivers", "loadExtraPolarJuanTopBaffleBtn"),
-            ("juan-batman", "Juan BATMAN outdoor 360", "loadExtraPolarJuanBatmanBtn"),
+            ("juan-batman", "Juan BATMAN 360 turntable", "loadExtraPolarJuanBatmanBtn"),
         ]
         # Speaker rotations do not line up with the other sets' off-axis angles
         if self.rotation_at_seat:

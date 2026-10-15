@@ -20,7 +20,7 @@ SET_TITLES = {
     "andres": "Andres Measurements",
     "juan-baffleless": "Juan Driver Measurements",
     "juan-lx521-top-raw": "Juan LX521 Top-Baffle Raw Measurements",
-    "juan-batman": "Juan BATMAN Outdoors (360 deg turntable)",
+    "juan-batman": "Juan BATMAN (360 deg turntable)",
     "juan-sweetspot": "Juan LX521.4 MGNEO and BATMAN from the Sweetspot",
     "kaspar": "Kaspar LX521 Outdoors (DSP)",
     SYSTEM_SET: "LX521.4 Complete System",
@@ -38,8 +38,8 @@ SET_DESCRIPTIONS = {
         "captured at L22MG microphone height."
     ),
     "juan-batman": (
-        "Juan's BATMAN (MU10 + nested tweeters, front tweeter in inverted polarity) measured "
-        "outdoors at 50 cm, mic 108 cm high, on a turntable from 0 to 350 deg in 10 deg steps "
+        "Juan's BATMAN (MU10 + nested tweeters on the outer side, front tweeter in inverted "
+        "polarity) measured at 50 cm, mic 108 cm high, on a turntable from 0 to 350 deg in 10 deg steps "
         "(12-Oct-2026). Polar plots show the measured 360 deg instead of a mirrored half, "
         "since the two sides differ. A second trace repeats 0-180 deg with Equalizer APO "
         "linearization to the Harman curve."

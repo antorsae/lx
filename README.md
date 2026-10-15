@@ -107,8 +107,9 @@ and do not specify microphone distance or height. The Dayton curves are also
 available through the Juan baffleless overlay in the other measurement explorers.
 
 The **juan-batman** set publishes `BATMAN POLARES 360 GRADOS.zip`: Juan's BATMAN
-(MU10 plus nested tweeters, front tweeter in inverted polarity) measured outdoors
-on 12 October 2026 at 50 cm, with the mic 108 cm high and no timing reference. One
+(MU10 plus nested tweeters on the outer side, "ANIDADOS EN EL EXTERIOR"; front tweeter
+in inverted polarity) measured on 12 October 2026 at 50 cm, with the mic 108 cm high
+and no timing reference. One
 turntable sweep covers 0-350° in 10° steps, and a second sweep repeats 0-180° with
 Equalizer APO linearization to the Harman curve. Files are named by absolute
 rotation; the `juan_360` pattern loads 0-180° as the usual front and rear angles
