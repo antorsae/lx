@@ -61,6 +61,16 @@ class TurntablePatternTest(unittest.TestCase):
         self.assertEqual(index[("BTM EQ", 90, "R")], "BTM 90 DEG FRO EQ")
         self.assertEqual(index[("BTM EQ", 0, "R")], "BTM 180 DEG REA EQ")
 
+    def test_short_front_suffix_keeps_the_sweep_name(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            _touch(root, [f"BTM LM+4 {a} DEG F" for a in range(0, 91, 10)])
+            index = self._index(root)
+
+        self.assertEqual({(d, s) for d, _, s in index}, {("BTM LM+4", "F"), ("BTM LM+4", "R")})
+        self.assertEqual(sorted(a for _, a, s in index if s == "F"), list(range(0, 91, 10)))
+        self.assertEqual(index[("BTM LM+4", 30, "F")], "BTM LM+4 30 DEG F")
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -94,7 +94,7 @@ MEASUREMENT_SETS = {
 | `scanspeak` | `SS10F8414G10 45 F.mdat` | Same convention as `juan` |
 | `juan_suffix` | `SS10F8424G00 45 F sn 074.mdat` | Same as `juan`, allowing text after `F`/`R` |
 | `lx521_system` | `LX521 HIGH MID INV ORIGINAL 45 GRADOS F.mdat` | Full system measurements with GRADOS notation |
-| `juan_360` | `BTM 250 DEG FRONT.mdat`, `BTM 120 DEG REA EQ.mdat` | Absolute turntable rotation; 0-180 loads as front/rear and 180-360 as the other side of the same driver, and text after `FRONT`/`FRO`/`REA` names a separate sweep |
+| `juan_360` | `BTM 250 DEG FRONT.mdat`, `BTM 120 DEG REA EQ.mdat`, `BTM LM+4 30 DEG F.mdat` | Absolute turntable rotation; 0-180 loads as front/rear and 180-360 as the other side of the same driver, and text after `FRONT`/`FRO`/`F`/`REA` names a separate sweep |
 
 Measurement sources may be nested below each configured source directory. This supports source layouts such as `POLARES L10NEO/FRONTALES` and `POLARES L10NEO/TRASERAS`.
 
@@ -127,48 +127,62 @@ than the direct sound, so REW's t=0 sits on the reflection, but its IR start sti
 marks the direct arrival. Juan's `PANTALLAZOS` screenshots are ungated, so their
 70-110° curves are dominated by those reflections.
 
-The **juan-sweetspot** set publishes `LX521_4 MGNEO 0_90 DESDE SWEETSPOT.zip` and
-`BATMAN 0_90 DESDE SWEETSPOT.zip`: Juan's LX521.4 MGNEO and BATMAN (nested tweeters),
-each as the right speaker with the UM not inverted at PB -20 dB, measured on
-13 October 2026 from the same listening seat, 20 minutes apart. The mic sat 114 cm
-high, 85 cm in front of the rear wall, and aimed at the front wall, with the speaker
-distance not recorded and no timing reference. It stayed at the seat while the speaker
-turned from 0°, with the baffle facing the wall, to 90° in 10° steps
-(`LX521 {rotation} DEG FRONT` and `BATM {rotation} DEG FRONT`, loaded with the
+The **juan-sweetspot** set publishes `LX521_4 MGNEO 0_90 DESDE SWEETSPOT.zip`,
+`BATMAN 0_90 DESDE SWEETSPOT.zip` and
+`BATMAN LM+4DB ANIDADOS INTERIOR 0_90 DESDE SWEETSPOT.zip`. The first two are Juan's
+LX521.4 MGNEO and BATMAN, each as the right speaker with the UM not inverted at
+PB -20 dB, measured on 13 October 2026 from the same listening seat, 20 minutes apart,
+with BATMAN's nested tweeters on the outer side ("ANIDADOS EN EXTERIOR"; the third zip
+repeats that screenshot under this name). On 15 October 2026 Juan measured BATMAN
+again from the same seat with the nested tweeters on the inner side ("ANIDADOS EN
+INTERIOR") and the LM raised 4 dB. The mic sat 114 cm high, 85 cm in front of the rear
+wall, and aimed at the front wall, with the speaker distance not recorded and no
+timing reference. It stayed at the seat while the speaker turned from 0°, with the
+baffle facing the wall, to 90° in 10° steps (`LX521 {rotation} DEG FRONT`,
+`BATM {rotation} DEG FRONT` and `BTM LM+4 {rotation} DEG F`, loaded with the
 `juan_360` pattern), so the angles are speaker rotation, not off-axis angle. The
 LX521.4 responses mirror about 45°: 40/50°, 30/60°, 20/70°, 10/80° and 0/90° agree
 within 1.2 dB RMS above 1 kHz, against 2.3-2.5 dB for an axis at 40° or 50°. BATMAN
-mirrors less well (about 3 dB RMS), as its turntable set already showed its two sides
-differ, and its treble peaks near 50°. So both point at the seat near 45-50°, and 0°
-and 90° are each about 45° off-axis.
+with the outer tweeters mirrors less well (about 3 dB RMS), as its turntable set
+already showed its two sides differ, and its treble peaks near 50°. So both point at
+the seat near 45-50°, and 0° and 90° are each about 45° off-axis.
+
+The 15 October sweep is 3.6-4.4 dB louder than the 13 October BATMAN from 125 Hz to
+1 kHz (median per rotation), which is the LM's 4 dB. Above 1.6 kHz the median
+difference stays within 1 dB, but gated, single rotations differ by up to 6 dB at
+3-6 kHz: with the tweeters on the inner side, the treble (8-16 kHz) is centred on 45°
+instead of 50°, and the rotations mirror about 45° within 2.3 dB RMS, against 2.9 dB
+with the outer tweeters. Its `PANTALLAZOS` also hold a screenshot titled "CON HIGH SHELF -9 DB Q5 EN
+14 KHZ", saved before these captures were taken. That run's captures are not in the
+zip; reloaded ungated with 1/12-octave smoothing, the captures match Juan's screenshot
+without the shelf.
 
 The set uses the site's usual 0.5 ms / 3.0 ms gate from REW's IR start, with
-1/12-octave smoothing. The rear wall's reflection arrives 4.4-4.7 ms after the direct
-sound and is strongest at 0-20°, only 3-8 dB below the direct sound, where the speaker
-faces the wall; the gate ends before it and before a weaker arrival at 3.1-3.4 ms
-(12-24 dB down), so the plots show what the speakers radiate toward the seat. Inside
-the gate, arrivals from 1.7 ms on are at least 19 dB down; the ones within 1 ms, 11-17
-dB down, come from the speakers themselves, since no room surface is close enough to
-reflect that early. A 4.2 ms gate, the longest
+1/12-octave smoothing. The rear wall's reflection arrives 4.4-4.8 ms after the direct
+sound and is strongest at 0-20°, only 3-10 dB below the direct sound, where the
+speaker faces the wall; the gate ends before it and before a weaker arrival at
+2.9-3.4 ms (12-25 dB down), so the plots show what the speakers radiate toward the
+seat. Inside the gate, arrivals from 1.7 ms on are at least 19 dB down; the ones
+within 1 ms, 11-20 dB down, come from the speakers themselves, since no room surface
+is close enough to reflect that early. A 4.2 ms gate, the longest
 that still ends before the wall, gives nearly the same curves above 3 kHz (95% of
 points within 1.2 dB), but in the LX521.4's 1-3 kHz region single frequencies move by
 up to 14 dB, so that region depends on the gate; both gates show its direct sound well
 below the in-room level around 1.3-1.8 kHz, most at 0° and 90°. Juan's ungated
 screenshots include the wall and the rest of the room, which fill in the low rotations:
 above 2 kHz the spread between rotations at one frequency is a median of 2-4 dB
-ungated against 6-10 dB gated (both with 1/12-octave smoothing), and at most 7-10 dB
-against 19-22 dB. Gated, the LX521.4 dips 10-14 dB at 5-7 kHz at every rotation,
+ungated against 6-10 dB gated (both with 1/12-octave smoothing), and at most 7-11 dB
+against 18-22 dB. Gated, the LX521.4 dips 10-14 dB at 5-7 kHz at every rotation,
 including 40° and 50° (18-37 dB deep unsmoothed); the room fills these in to a shallow
 dip. The
-published `lx521-system` set (UM inverted, 50 cm) has no such dip on-axis, and BATMAN
-has none near on-axis. Juan's BATMAN note says "EN EXTERIOR", as on the turntable set,
-but its impulse responses show the same room reflections as the LX521.4 sweep.
+published `lx521-system` set (UM inverted, 50 cm) has no such dip on-axis, and neither
+BATMAN sweep has one at 50° (at most 5 dB at 40°).
 
 The set has no DI or beamwidth pages. Its polar explorer draws each capture at its
 rotation, relative to the 0° rotation like the other polar explorers, from -40 to
 +25 dB because the rotations aiming at the seat reach 22 dB above 0°; nothing is
 mirrored. Each angle page draws every rotation, with mirror pairs in one color and the
-later one dashed, and the frequency explorer overlays the two speakers at any rotation.
+later one dashed, and the frequency explorer overlays the three sweeps at any rotation.
 
 ## Usage
 

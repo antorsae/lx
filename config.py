@@ -46,8 +46,8 @@ BATMAN_DRIVER_NOTES = {
     ),
 }
 
-# Juan's speakers measured from his listening seat on 13-Oct-2026. Both sweeps
-# share the seat and procedure; the per-speaker notes name what was measured.
+# Juan's speakers measured from his listening seat on 13 and 15-Oct-2026. All
+# sweeps share the seat and procedure; the per-sweep notes name what was measured.
 SWEETSPOT_COMMON_NOTE = (
     "Right speaker. Mic fixed at the listening seat, 114 cm high, aimed at the front "
     "wall; distance not recorded, no timing reference. Angle = speaker rotation from "
@@ -56,7 +56,14 @@ SWEETSPOT_COMMON_NOTE = (
 
 SWEETSPOT_SPEAKER_NOTES = {
     "LX521.4 MGNEO (sweetspot)": "Juan's LX521.4 MGNEO, UM not inverted, 13-Oct-2026.",
-    "BATMAN (sweetspot)": "Juan's BATMAN with nested tweeters, UM not inverted, 13-Oct-2026.",
+    "BATMAN outer tweeters (sweetspot)": (
+        "Juan's BATMAN with the nested tweeters on the outer side (ANIDADOS EN EXTERIOR), "
+        "UM not inverted, 13-Oct-2026."
+    ),
+    "BATMAN LM+4 dB, inner tweeters (sweetspot)": (
+        "Juan's BATMAN with the nested tweeters on the inner side (ANIDADOS EN INTERIOR) "
+        "and the LM raised 4 dB, UM not inverted, 15-Oct-2026."
+    ),
 }
 
 # Measurement Set Configurations
@@ -208,11 +215,12 @@ MEASUREMENT_SETS = {
     },
     "juan-sweetspot": {
         # Juan's LX521.4 MGNEO and BATMAN, each measured as the right speaker
-        # from the same listening seat on 13-Oct-2026, 20 minutes apart. The mic
-        # stayed at the seat while the speaker turned from 0 deg (baffle facing
-        # the wall) to 90 deg in 10 deg steps, so the angles are speaker
-        # rotation, not off-axis angle: the speakers point at the seat near
-        # 45-50 deg.
+        # from the same listening seat on 13-Oct-2026, 20 minutes apart, and
+        # BATMAN again on 15-Oct-2026 with its nested tweeters moved from the
+        # outer to the inner side and the LM raised 4 dB. The mic stayed at
+        # the seat while the speaker turned from 0 deg (baffle facing the
+        # wall) to 90 deg in 10 deg steps, so the angles are speaker rotation,
+        # not off-axis angle: the speakers point at the seat near 45-50 deg.
         "path": None,  # Not used - see 'sources' below
         "sources": [
             {
@@ -223,7 +231,12 @@ MEASUREMENT_SETS = {
             {
                 "path": Path("measurements/juan/BATMAN 0_90 DESDE SWEETSPOT"),
                 "pattern_type": "juan_360",  # BATM {rotation} DEG FRONT.mdat
-                "driver_name_aliases": {"BATM": "BATMAN (sweetspot)"},
+                "driver_name_aliases": {"BATM": "BATMAN outer tweeters (sweetspot)"},
+            },
+            {
+                "path": Path("measurements/juan/BATMAN LM+4DB ANIDADOS INTERIOR 0_90 DESDE SWEETSPOT"),
+                "pattern_type": "juan_360",  # BTM LM+4 {rotation} DEG F.mdat
+                "driver_name_aliases": {"BTM LM+4": "BATMAN LM+4 dB, inner tweeters (sweetspot)"},
             },
         ],
         "pattern_type": "juan_360",
@@ -234,7 +247,7 @@ MEASUREMENT_SETS = {
         "hdf5_file": "polar_data_juan_sweetspot.h5",
         "output_dir": OUTPUT_DIR / "juan-sweetspot",
         # The rear wall is 85 cm behind the mic; its reflection arrives
-        # 4.4-4.7 ms after the direct sound and is strongest (3-8 dB down) at
+        # 4.4-4.8 ms after the direct sound and is strongest (3-10 dB down) at
         # 0-20 deg, where the speaker faces it. The default 3 ms gate ends
         # before it and before a weaker arrival at 3.1-3.4 ms, so the plots
         # show what the speakers radiate toward the seat. Juan's ungated
@@ -357,7 +370,8 @@ DRIVER_COLORS = {
     'BATMAN': '#1e3a8a',                       # Navy - Juan BATMAN, full rotation
     'BATMAN Harman EQ': '#ca8a04',             # Gold - Juan BATMAN with Harman EQ
     'LX521.4 MGNEO (sweetspot)': '#c2410c',    # Burnt orange - Juan LX521.4 at the seat
-    'BATMAN (sweetspot)': '#1e3a8a',           # Navy - Juan BATMAN at the seat
+    'BATMAN outer tweeters (sweetspot)': '#1e3a8a',           # Navy - Juan BATMAN at the seat
+    'BATMAN LM+4 dB, inner tweeters (sweetspot)': '#0d9488',  # Teal - BATMAN LM+4 dB, inner tweeters
 }
 
 DRIVER_NAME_ALIASES = {
