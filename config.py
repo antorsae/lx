@@ -47,8 +47,9 @@ BATMAN_DRIVER_NOTES = {
     ),
 }
 
-# Juan's speakers measured from his listening seat on 13 and 15-Oct-2026. All
-# sweeps share the seat and procedure; the per-sweep notes name what was measured.
+# Juan's speakers measured from the listening seat on 13, 15 and 16-Oct-2026.
+# All sweeps share the seat and procedure; the per-sweep notes name what was
+# measured.
 SWEETSPOT_COMMON_NOTE = (
     "Right speaker. Mic fixed at the listening seat, 114 cm high, aimed at the front "
     "wall; distance not recorded, no timing reference. Angle = speaker rotation from "
@@ -64,6 +65,11 @@ SWEETSPOT_SPEAKER_NOTES = {
     "BATMAN LM+4 dB, inner tweeters (sweetspot)": (
         "Juan's BATMAN with the nested tweeters on the inner side (ANIDADOS EN INTERIOR) "
         "and the LM raised 4 dB, UM not inverted, 15-Oct-2026."
+    ),
+    "BATMAN 10F8414 UM, LM+4 dB, inner tweeters (sweetspot)": (
+        "Juan's BATMAN with a ScanSpeak 10F/8414 as UM in place of the MU10, linearized "
+        "(SS 10F 8414 LINEALIZADO), the nested tweeters on the inner side (ANIDADOS EN "
+        "INTERIOR) and the LM raised 4 dB, UM not inverted, 16-Oct-2026."
     ),
 }
 
@@ -218,10 +224,12 @@ MEASUREMENT_SETS = {
         # Juan's LX521.4 MGNEO and BATMAN, each measured as the right speaker
         # from the same listening seat on 13-Oct-2026, 20 minutes apart, and
         # BATMAN again on 15-Oct-2026 with its nested tweeters moved from the
-        # outer to the inner side and the LM raised 4 dB. The mic stayed at
-        # the seat while the speaker turned from 0 deg (baffle facing the
-        # wall) to 90 deg in 10 deg steps, so the angles are speaker rotation,
-        # not off-axis angle: the speakers point at the seat near 45-50 deg.
+        # outer to the inner side and the LM raised 4 dB, and on 16-Oct-2026
+        # in that setup with a linearized ScanSpeak 10F/8414 as UM in place of
+        # the MU10. The mic stayed at the seat while the speaker turned from
+        # 0 deg (baffle facing the wall) to 90 deg in 10 deg steps, so the
+        # angles are speaker rotation, not off-axis angle: the speakers point
+        # at the seat near 45-50 deg.
         "path": None,  # Not used - see 'sources' below
         "sources": [
             {
@@ -238,6 +246,14 @@ MEASUREMENT_SETS = {
                 "path": Path("measurements/juan/BATMAN LM+4DB ANIDADOS INTERIOR 0_90 DESDE SWEETSPOT"),
                 "pattern_type": "juan_360",  # BTM LM+4 {rotation} DEG F.mdat
                 "driver_name_aliases": {"BTM LM+4": "BATMAN LM+4 dB, inner tweeters (sweetspot)"},
+            },
+            {
+                "path": Path("measurements/juan/BATMAN LM+4DB SS 10F 8414 ANIDADOS INTERIOR 0_90 DESDE SWEETSPOT"),
+                # BTM LM+4 10F 0 DEG F.mdat, then BTM LM+4 10F {rotation} DEG.mdat
+                "pattern_type": "juan_360",
+                "driver_name_aliases": {
+                    "BTM LM+4 10F": "BATMAN 10F8414 UM, LM+4 dB, inner tweeters (sweetspot)",
+                },
             },
         ],
         "pattern_type": "juan_360",
@@ -373,6 +389,7 @@ DRIVER_COLORS = {
     'LX521.4 MGNEO (sweetspot)': '#c2410c',    # Burnt orange - Juan LX521.4 at the seat
     'BATMAN outer tweeters (sweetspot)': '#1e3a8a',           # Navy - Juan BATMAN at the seat
     'BATMAN LM+4 dB, inner tweeters (sweetspot)': '#0d9488',  # Teal - BATMAN LM+4 dB, inner tweeters
+    'BATMAN 10F8414 UM, LM+4 dB, inner tweeters (sweetspot)': '#7c3aed',  # Violet - same with a 10F/8414 UM
 }
 
 DRIVER_NAME_ALIASES = {

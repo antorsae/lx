@@ -71,6 +71,18 @@ class TurntablePatternTest(unittest.TestCase):
         self.assertEqual(sorted(a for _, a, s in index if s == "F"), list(range(0, 91, 10)))
         self.assertEqual(index[("BTM LM+4", 30, "F")], "BTM LM+4 30 DEG F")
 
+    def test_missing_face_word_keeps_the_sweep_together(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            # Only the first capture of this sweep names the face toward the mic.
+            _touch(root, ["BTM LM+4 10F 0 DEG F"] + [f"BTM LM+4 10F {a} DEG" for a in range(10, 91, 10)])
+            index = self._index(root)
+
+        self.assertEqual({(d, s) for d, _, s in index}, {("BTM LM+4 10F", "F"), ("BTM LM+4 10F", "R")})
+        self.assertEqual(sorted(a for _, a, s in index if s == "F"), list(range(0, 91, 10)))
+        self.assertEqual(index[("BTM LM+4 10F", 0, "F")], "BTM LM+4 10F 0 DEG F")
+        self.assertEqual(index[("BTM LM+4 10F", 30, "F")], "BTM LM+4 10F 30 DEG")
+
 
 if __name__ == "__main__":
     unittest.main()

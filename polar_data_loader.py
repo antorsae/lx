@@ -76,13 +76,14 @@ _PATTERN_DEFS = {
         ),
     },
     # Juan's 360 deg turntable sweeps name each capture by its absolute
-    # rotation ("BTM 250 DEG FRONT", "BTM 120 DEG REA EQ", "BTM LM+4 30 DEG F").
-    # FRONT/FRO/F/REA only says which face is toward the mic; text after it
-    # ("EQ") marks a separate sweep and stays part of the driver name. turntable_entries() turns the
+    # rotation ("BTM 250 DEG FRONT", "BTM 120 DEG REA EQ", "BTM LM+4 30 DEG F",
+    # "BTM LM+4 10F 30 DEG"). FRONT/FRO/F/REA only says which face is toward
+    # the mic and may be missing; text after it ("EQ") marks a separate sweep
+    # and stays part of the driver name. turntable_entries() turns the
     # rotations into the front/rear angles the other patterns use.
     "juan_360": {
         "regex": re.compile(
-            r"^(?P<driver>.+?)\s+(?P<angle>\d+)\s+DEG\s+(?:FRONT|FRO|F|REA)(?:\s+(?P<variant>.+))?$"
+            r"^(?P<driver>.+?)\s+(?P<angle>\d+)\s+DEG(?:\s+(?:FRONT|FRO|F|REA))?(?:\s+(?P<variant>.+))?$"
         ),
         "driver_from_match": lambda m: " ".join(filter(None, (m.group("driver"), m.group("variant")))),
         "turntable": True,

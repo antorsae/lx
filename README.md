@@ -94,7 +94,7 @@ MEASUREMENT_SETS = {
 | `scanspeak` | `SS10F8414G10 45 F.mdat` | Same convention as `juan` |
 | `juan_suffix` | `SS10F8424G00 45 F sn 074.mdat` | Same as `juan`, allowing text after `F`/`R` |
 | `lx521_system` | `LX521 HIGH MID INV ORIGINAL 45 GRADOS F.mdat` | Full system measurements with GRADOS notation |
-| `juan_360` | `BTM 250 DEG FRONT.mdat`, `BTM 120 DEG REA EQ.mdat`, `BTM LM+4 30 DEG F.mdat` | Absolute turntable rotation; 0-180 loads as front/rear and 180-360 as the other side of the same driver, and text after `FRONT`/`FRO`/`F`/`REA` names a separate sweep |
+| `juan_360` | `BTM 250 DEG FRONT.mdat`, `BTM 120 DEG REA EQ.mdat`, `BTM LM+4 30 DEG F.mdat`, `BTM LM+4 10F 30 DEG.mdat` | Absolute turntable rotation; 0-180 loads as front/rear and 180-360 as the other side of the same driver; `FRONT`/`FRO`/`F`/`REA` may be missing, and text after it names a separate sweep |
 
 Measurement sources may be nested below each configured source directory. This supports source layouts such as `POLARES L10NEO/FRONTALES` and `POLARES L10NEO/TRASERAS`.
 
@@ -129,19 +129,24 @@ marks the direct arrival. Juan's `PANTALLAZOS` screenshots are ungated, so their
 70-110° curves are dominated by those reflections.
 
 The **juan-sweetspot** set publishes `LX521_4 MGNEO 0_90 DESDE SWEETSPOT.zip`,
-`BATMAN 0_90 DESDE SWEETSPOT.zip` and
-`BATMAN LM+4DB ANIDADOS INTERIOR 0_90 DESDE SWEETSPOT.zip`. The first two are Juan's
+`BATMAN 0_90 DESDE SWEETSPOT.zip`,
+`BATMAN LM+4DB ANIDADOS INTERIOR 0_90 DESDE SWEETSPOT.zip` and
+`BATMAN LM+4DB SS 10F 8414 ANIDADOS INTERIOR 0_90 DESDE SWEETSPOT.zip`. The first two are Juan's
 LX521.4 MGNEO and BATMAN, each as the right speaker with the UM not inverted at
 PB -20 dB, measured on 13 October 2026 from the same listening seat, 20 minutes apart,
 with BATMAN's nested tweeters on the outer side ("ANIDADOS EN EXTERIOR"; the third zip
 repeats that screenshot under this name). On 15 October 2026 Juan measured BATMAN
 again from the same seat with the nested tweeters on the inner side ("ANIDADOS EN
-INTERIOR") and the LM raised 4 dB. The mic sat 114 cm high, 85 cm in front of the rear
-wall, and aimed at the front wall, with the speaker distance not recorded and no
-timing reference. It stayed at the seat while the speaker turned from 0°, with the
-baffle facing the wall, to 90° in 10° steps (`LX521 {rotation} DEG FRONT`,
-`BATM {rotation} DEG FRONT` and `BTM LM+4 {rotation} DEG F`, loaded with the
-`juan_360` pattern), so the angles are speaker rotation, not off-axis angle. The
+INTERIOR") and the LM raised 4 dB, and on 16 October 2026 in that setup with a
+linearized ScanSpeak 10F/8414 as UM in place of the MU10 ("SS 10F 8414 LINEALIZADO").
+The mic sat 114 cm high,
+85 cm in front of the rear wall, and aimed at the front wall, with the speaker distance
+not recorded and no timing reference. It stayed at the seat while the speaker turned
+from 0°, with the baffle facing the wall, to 90° in 10° steps
+(`LX521 {rotation} DEG FRONT`, `BATM {rotation} DEG FRONT`,
+`BTM LM+4 {rotation} DEG F` and `BTM LM+4 10F {rotation} DEG`, where only the 0°
+capture ends in `F`, loaded with the `juan_360` pattern), so the angles are speaker
+rotation, not off-axis angle. The
 LX521.4 responses mirror about 45°: 40/50°, 30/60°, 20/70°, 10/80° and 0/90° agree
 within 1.2 dB RMS above 1 kHz, against 2.3-2.5 dB for an axis at 40° or 50°. BATMAN
 with the outer tweeters mirrors less well (about 3 dB RMS), as its turntable set
@@ -158,13 +163,26 @@ with the outer tweeters. Its `PANTALLAZOS` also hold a screenshot titled "CON HI
 zip; reloaded ungated with 1/12-octave smoothing, the captures match Juan's screenshot
 without the shelf.
 
+The 16 October captures, reloaded the same way, reproduce the ten legend values of
+Juan's screenshot, read at 5.17 kHz, within 0.33 dB. Ungated, as in that screenshot,
+every 1/3-octave band stays within 2.2 dB of the 15 October sweep (median over
+rotations). Gated, the rotations facing the seat (30-70°) have a notch at
+1.55-1.66 kHz, 9-18.5 dB below the response around it (deepest at 40°) and 9-17 dB
+below the 15 October sweep at the same frequency; at 0°, 10° and 90° it is under 2 dB,
+and ungated it is at most 3.4 dB at any rotation. The notch is in the direct sound:
+over 1.25-2.5 kHz, the energy in the first 3 ms falls 4.4-5.6 dB at 30-70°, while the
+energy after 3 ms stays within 0.7 dB, so the room fills it in. An EQ change would
+lower both, so with the 10F/8414 UM the speaker sends less of that band straight at the
+seat. The treble (8-16 kHz) stays within 1 dB of the 15 October sweep, still centred
+near 45°.
+
 The set uses the site's usual 0.5 ms / 3.0 ms gate from REW's IR start, with
 1/12-octave smoothing. The rear wall's reflection arrives 4.4-4.8 ms after the direct
 sound and is strongest at 0-20°, only 3-10 dB below the direct sound, where the
 speaker faces the wall; the gate ends before it and before a weaker arrival at
 2.9-3.4 ms (12-25 dB down), so the plots show what the speakers radiate toward the
-seat. Inside the gate, arrivals from 1.7 ms on are at least 19 dB down; the ones
-within 1 ms, 11-20 dB down, come from the speakers themselves, since no room surface
+seat. Inside the gate, arrivals from 1.7 ms on are at least 18 dB down; the ones
+within 1 ms, 10-20 dB down, come from the speakers themselves, since no room surface
 is close enough to reflect that early. A 4.2 ms gate, the longest
 that still ends before the wall, gives nearly the same curves above 3 kHz (95% of
 points within 1.2 dB), but in the LX521.4's 1-3 kHz region single frequencies move by
@@ -176,14 +194,14 @@ ungated against 6-10 dB gated (both with 1/12-octave smoothing), and at most 7-1
 against 18-22 dB. Gated, the LX521.4 dips 10-14 dB at 5-7 kHz at every rotation,
 including 40° and 50° (18-37 dB deep unsmoothed); the room fills these in to a shallow
 dip. The
-published `lx521-system` set (UM inverted, 50 cm) has no such dip on-axis, and neither
+published `lx521-system` set (UM inverted, 50 cm) has no such dip on-axis, and no
 BATMAN sweep has one at 50° (at most 5 dB at 40°).
 
 The set has no DI or beamwidth pages. Its polar explorer draws each capture at its
 rotation, relative to the 0° rotation like the other polar explorers, from -40 to
 +25 dB because the rotations aiming at the seat reach 22 dB above 0°; nothing is
 mirrored. Each angle page draws every rotation, with mirror pairs in one color and the
-later one dashed, and the frequency explorer overlays the three sweeps at any rotation.
+later one dashed, and the frequency explorer overlays the four sweeps at any rotation.
 
 ## Usage
 

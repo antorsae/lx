@@ -50,6 +50,10 @@ SET_DESCRIPTIONS = {
         "nested tweeters on the outer side. On 15-Oct-2026 Juan measured BATMAN again from the "
         "seat with the nested tweeters on the inner side and the LM raised 4 dB: it is about "
         "4 dB louder from 125 Hz to 1 kHz, and its treble is centred on 45 deg instead of 50 deg. "
+        "The 16-Oct-2026 sweep repeats that setup with a linearized ScanSpeak 10F/8414 as UM in "
+        "place of the MU10: gated, "
+        "the rotations facing the seat (30-70 deg) show a notch at 1.55-1.66 kHz, up to 18.5 dB "
+        "deep, which the room fills in on Juan's ungated screenshot. "
         "The mic stayed at the seat, 114 cm high and 85 cm in front of the rear wall, while the "
         "speaker turned from 0 deg (baffle facing the wall) to 90 deg in 10 deg steps. Angles are "
         "speaker rotation, not off-axis angle: the speakers point at the seat near 45-50 deg, "
@@ -57,7 +61,7 @@ SET_DESCRIPTIONS = {
         "reflection (4.4-4.8 ms), with 1/12-octave smoothing, so the plots show what the "
         "speakers radiate toward the seat; Juan's ungated screenshots include the wall, which "
         "fills in the low rotations. The LX521.4 dips 10-14 dB at 5-7 kHz at every rotation; "
-        "neither BATMAN sweep does at 50 deg. The polar explorer is relative to the 0 deg "
+        "no BATMAN sweep does at 50 deg. The polar explorer is relative to the 0 deg "
         "rotation; there are no DI or beamwidth pages, since those take 0 deg as on-axis."
     ),
     "kaspar": (
@@ -87,7 +91,7 @@ DRIVER_ROLES = {
 # Sets whose traces are not one driver each.
 SET_SUBTITLES = {
     "juan-batman": "2 Sweeps - Full 360 deg coverage",
-    "juan-sweetspot": "3 Sweeps of 2 Speakers - Rotation 0-90 deg, mic at the sweetspot",
+    "juan-sweetspot": "4 Sweeps of 2 Speakers - Rotation 0-90 deg, mic at the sweetspot",
 }
 
 
