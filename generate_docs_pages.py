@@ -53,9 +53,10 @@ SET_DESCRIPTIONS = {
         "The 16-Oct-2026 sweep repeats that setup with a linearized ScanSpeak 10F/8414 as UM in "
         "place of the MU10: gated, "
         "the rotations facing the seat (30-70 deg) show a notch at 1.55-1.66 kHz, up to 18.5 dB "
-        "deep, which the room fills in on Juan's ungated screenshot. A last 16-Oct-2026 sweep "
+        "deep, which the room fills in on Juan's ungated screenshot. A later 16-Oct-2026 sweep "
         "without the nested tweeters and the 10F's 7.5 kHz filter has no such notch and "
-        "mirrors about 45 deg within 1.1 dB RMS. "
+        "mirrors about 45 deg within 1.1 dB RMS, and one more adds a +15 dB high shelf at "
+        "8 kHz. "
         "The mic stayed at the seat, 114 cm high and 85 cm in front of the rear wall, while the "
         "speaker turned from 0 deg (baffle facing the wall) to 90 deg in 10 deg steps. Angles are "
         "speaker rotation, not off-axis angle: the speakers point at the seat near 45-50 deg, "
@@ -93,7 +94,7 @@ DRIVER_ROLES = {
 # Sets whose traces are not one driver each.
 SET_SUBTITLES = {
     "juan-batman": "2 Sweeps - Full 360 deg coverage",
-    "juan-sweetspot": "5 Sweeps of 2 Speakers - Rotation 0-90 deg, mic at the sweetspot",
+    "juan-sweetspot": "6 Sweeps of 2 Speakers - Rotation 0-90 deg, mic at the sweetspot",
 }
 
 

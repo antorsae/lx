@@ -76,6 +76,10 @@ SWEETSPOT_SPEAKER_NOTES = {
         "with the linearized ScanSpeak 10F/8414 UM without its 7.5 kHz filter (SIN "
         "HIGHPASS EN 7,5 KHZ) and the LM raised 4 dB, UM not inverted, 16-Oct-2026."
     ),
+    "BATMAN 10F8414 UM, LM+4 dB, no tweeters, +15 dB shelf at 8 kHz (sweetspot)": (
+        "The same setup an hour later with a +15 dB high shelf at 8 kHz, Q 0.71 (CON "
+        "HIGHSHELF EN 8 KHZ +15 DBS Q0,71), 16-Oct-2026."
+    ),
 }
 
 # Measurement Set Configurations
@@ -232,10 +236,10 @@ MEASUREMENT_SETS = {
         # outer to the inner side and the LM raised 4 dB, and on 16-Oct-2026
         # in that setup with a linearized ScanSpeak 10F/8414 as UM in place of
         # the MU10, then without the nested tweeters and the 10F's 7.5 kHz
-        # filter. The mic stayed at the seat while the speaker turned from
-        # 0 deg (baffle facing the wall) to 90 deg in 10 deg steps, so the
-        # angles are speaker rotation, not off-axis angle: the speakers point
-        # at the seat near 45-50 deg.
+        # filter, without and with a +15 dB shelf at 8 kHz. The mic stayed at
+        # the seat while the speaker turned from 0 deg (baffle facing the
+        # wall) to 90 deg in 10 deg steps, so the angles are speaker rotation,
+        # not off-axis angle: the speakers point at the seat near 45-50 deg.
         "path": None,  # Not used - see 'sources' below
         "sources": [
             {
@@ -268,6 +272,15 @@ MEASUREMENT_SETS = {
                 "pattern_type": "juan_360",  # BTM LM+4 10F NOHP {rotation}.mdat
                 "driver_name_aliases": {"BTM LM+4 10F NOHP": "BATMAN 10F8414 UM, LM+4 dB, no tweeters (sweetspot)"},
             },
+            {
+                "path": Path(
+                    "measurements/juan/BATMAN LM+4DB SS 10F 8414 NO HP EN 7,5 KHZ + HIGHSHELF +15DB A 8 KHZ "
+                    "Y SIN ANIDADOS 0_90 DESDE SWEETSPOT"
+                ),
+                # Same capture names as the sweep without the shelf
+                "pattern_type": "juan_360",  # BTM LM+4 10F NOHP {rotation}.mdat
+                "driver_name_aliases": {"BTM LM+4 10F NOHP": "BATMAN 10F8414 UM, LM+4 dB, no tweeters, +15 dB shelf at 8 kHz (sweetspot)"},
+            },
         ],
         "pattern_type": "juan_360",
         "angles": list(range(0, 91, 10)),
@@ -279,7 +292,7 @@ MEASUREMENT_SETS = {
         # The rear wall is 85 cm behind the mic; its reflection arrives
         # 4.4-4.8 ms after the direct sound and is strongest (3-10 dB down) at
         # 0-20 deg, where the speaker faces it. The default 3 ms gate ends
-        # before it and before weaker arrivals at 2.9-3.8 ms, so the plots
+        # before it and before weaker arrivals at 2.9-3.9 ms, so the plots
         # show what the speakers radiate toward the seat. Juan's ungated
         # screenshots include the wall, which fills in the low rotations.
         # 1/12-octave smoothing keeps single frequencies in the polar explorer
@@ -404,6 +417,7 @@ DRIVER_COLORS = {
     'BATMAN LM+4 dB, inner tweeters (sweetspot)': '#0d9488',  # Teal - BATMAN LM+4 dB, inner tweeters
     'BATMAN 10F8414 UM, LM+4 dB, inner tweeters (sweetspot)': '#7c3aed',  # Violet - same with a 10F/8414 UM
     'BATMAN 10F8414 UM, LM+4 dB, no tweeters (sweetspot)': '#db2777',  # Pink - 10F/8414 UM, no tweeters
+    'BATMAN 10F8414 UM, LM+4 dB, no tweeters, +15 dB shelf at 8 kHz (sweetspot)': '#ca8a04',  # Gold - same with a +15 dB shelf at 8 kHz
 }
 
 DRIVER_NAME_ALIASES = {
