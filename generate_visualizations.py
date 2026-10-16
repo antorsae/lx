@@ -105,8 +105,8 @@ from directivity_calculations import (
 
 # Polar range for a speaker turned at the seat: the usual -40 dB floor, with
 # room above 0 dB because its 0 deg rotation is off-axis and the rotations
-# aiming at the seat reach +22 dB above it.
-ROTATION_POLAR_LIMITS_DB = (-40, 25)
+# aiming at the seat reach +29 dB above it.
+ROTATION_POLAR_LIMITS_DB = (-40, 30)
 
 
 def log_bin_frequency(freq, *arrays):

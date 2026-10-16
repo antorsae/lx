@@ -83,6 +83,18 @@ class TurntablePatternTest(unittest.TestCase):
         self.assertEqual(index[("BTM LM+4 10F", 0, "F")], "BTM LM+4 10F 0 DEG F")
         self.assertEqual(index[("BTM LM+4 10F", 30, "F")], "BTM LM+4 10F 30 DEG")
 
+    def test_rotation_without_deg_ends_the_name(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            _touch(root, [f"BTM LM+4 10F NOHP {a}" for a in range(0, 91, 10)])
+            # Not a capture name: the rotation is glued to DEG.
+            _touch(root, ["BTM 360_0 0DEG FRON"])
+            index = self._index(root)
+
+        self.assertEqual({(d, s) for d, _, s in index}, {("BTM LM+4 10F NOHP", "F"), ("BTM LM+4 10F NOHP", "R")})
+        self.assertEqual(sorted(a for _, a, s in index if s == "F"), list(range(0, 91, 10)))
+        self.assertEqual(index[("BTM LM+4 10F NOHP", 30, "F")], "BTM LM+4 10F NOHP 30")
+
 
 if __name__ == "__main__":
     unittest.main()

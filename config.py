@@ -71,6 +71,11 @@ SWEETSPOT_SPEAKER_NOTES = {
         "(SS 10F 8414 LINEALIZADO), the nested tweeters on the inner side (ANIDADOS EN "
         "INTERIOR) and the LM raised 4 dB, UM not inverted, 16-Oct-2026."
     ),
+    "BATMAN 10F8414 UM, LM+4 dB, no tweeters (sweetspot)": (
+        "Juan's BATMAN without the nested tweeters, physically removed (SIN ANIDADOS), "
+        "with the linearized ScanSpeak 10F/8414 UM without its 7.5 kHz filter (SIN "
+        "HIGHPASS EN 7,5 KHZ) and the LM raised 4 dB, UM not inverted, 16-Oct-2026."
+    ),
 }
 
 # Measurement Set Configurations
@@ -226,7 +231,8 @@ MEASUREMENT_SETS = {
         # BATMAN again on 15-Oct-2026 with its nested tweeters moved from the
         # outer to the inner side and the LM raised 4 dB, and on 16-Oct-2026
         # in that setup with a linearized ScanSpeak 10F/8414 as UM in place of
-        # the MU10. The mic stayed at the seat while the speaker turned from
+        # the MU10, then without the nested tweeters and the 10F's 7.5 kHz
+        # filter. The mic stayed at the seat while the speaker turned from
         # 0 deg (baffle facing the wall) to 90 deg in 10 deg steps, so the
         # angles are speaker rotation, not off-axis angle: the speakers point
         # at the seat near 45-50 deg.
@@ -255,6 +261,13 @@ MEASUREMENT_SETS = {
                     "BTM LM+4 10F": "BATMAN 10F8414 UM, LM+4 dB, inner tweeters (sweetspot)",
                 },
             },
+            {
+                "path": Path(
+                    "measurements/juan/BATMAN LM+4DB SS 10F 8414 NO HP EN 7,5 KHZ Y SIN ANIDADOS 0_90 DESDE SWEETSPOT"
+                ),
+                "pattern_type": "juan_360",  # BTM LM+4 10F NOHP {rotation}.mdat
+                "driver_name_aliases": {"BTM LM+4 10F NOHP": "BATMAN 10F8414 UM, LM+4 dB, no tweeters (sweetspot)"},
+            },
         ],
         "pattern_type": "juan_360",
         "angles": list(range(0, 91, 10)),
@@ -266,7 +279,7 @@ MEASUREMENT_SETS = {
         # The rear wall is 85 cm behind the mic; its reflection arrives
         # 4.4-4.8 ms after the direct sound and is strongest (3-10 dB down) at
         # 0-20 deg, where the speaker faces it. The default 3 ms gate ends
-        # before it and before a weaker arrival at 3.1-3.4 ms, so the plots
+        # before it and before weaker arrivals at 2.9-3.8 ms, so the plots
         # show what the speakers radiate toward the seat. Juan's ungated
         # screenshots include the wall, which fills in the low rotations.
         # 1/12-octave smoothing keeps single frequencies in the polar explorer
@@ -390,6 +403,7 @@ DRIVER_COLORS = {
     'BATMAN outer tweeters (sweetspot)': '#1e3a8a',           # Navy - Juan BATMAN at the seat
     'BATMAN LM+4 dB, inner tweeters (sweetspot)': '#0d9488',  # Teal - BATMAN LM+4 dB, inner tweeters
     'BATMAN 10F8414 UM, LM+4 dB, inner tweeters (sweetspot)': '#7c3aed',  # Violet - same with a 10F/8414 UM
+    'BATMAN 10F8414 UM, LM+4 dB, no tweeters (sweetspot)': '#db2777',  # Pink - 10F/8414 UM, no tweeters
 }
 
 DRIVER_NAME_ALIASES = {
